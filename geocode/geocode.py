@@ -23,7 +23,7 @@ def geocode_file(filename):
     for place in f:
         g = geocoders.Google()
         pla, (lat,lng) = list(g.geocode(place, exactly_one = False))[0]
-        o.write(pla.split(",")[0]+","+str(lat)+","+str(lng))
+        o.write(pla.split(",")[0]+","+str(lat)+","+str(lng)+"\n")
     f.close()
     o.close()
 
