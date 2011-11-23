@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Written From Scratch</title>
+    <script src="js/polymaps.min.js" type="text/javascript"></script>
+</head>
+<body id="map" style="height: 500px; width: 1000px;" >
+    <script type="text/javascript">
+        var po = org.polymaps;
+
+// lat=13.01268&lon=80.236362&zoom=15
+var map = po.map()
+            .container(document.getElementById('map').appendChild(po.svg("svg")))
+            .center({ lat: 13.01268, lon: 80.2363626 })
+            .zoom(15)
+            .zoomRange([13,16])
+            .add(po.interact());
+map.add(po.image()
+        .url(po.url("http://{S}tile.cloudmade.com"
+                + "/d2126e5f6bd740079852c1ee3a900d68"
+                + "/29918/256/{Z}/{X}/{Y}.png") 
+            .hosts(["a.", "b.", "c.", ""])));
+
+
+
+    </script>
+</body>
+</html>
