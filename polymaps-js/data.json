@@ -1,0 +1,15 @@
+{
+    "type" : "FeatureCollection",
+    "features" : [
+        {
+            "geometry" : {
+                "type" : "Polygon",
+                "coordinates" : [[[80.236362, 13.01268], [80.237, 13.012], [80.238, 13.012], 
+                [80.239, 13.012], [80.236362, 13.01268]]]
+            },
+    "type" : "Feature",
+    "properties" : {"PCI" : "99"}
+        }
+    ]
+
+}

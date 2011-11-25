@@ -22,6 +22,17 @@ map.add(po.image()
                 + "/29918/256/{Z}/{X}/{Y}.png") 
             .hosts(["a.", "b.", "c.", ""])));
 
+map.add(po.geoJson()
+          .url("data.json")
+          .id("streets")
+          .zoom(14)
+          .tile(false)
+          .on("load", po.stylist()
+              .attr("stroke", function(){
+                    return "rgb(58,188,0)";
+                    })));
+
+map.add(po.compass().pan("none"));
 
 
     </script>
