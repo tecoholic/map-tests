@@ -1,10 +1,14 @@
 /**************************************************************************
- *              OSM2GEO - OSM to GeoJSON converter
+ *                 OSM2GEO - OSM to GeoJSON converter
  * OSM to GeoJSON converter takes in a .osm XML file as input and produces
  * corresponding GeoJSON object.
  *
- * DEPENDENCY:
- * OSM2GEO entirely depends on jQuery for the XML parsing and
+ * AUTHOR: P.Arunmozhi <aruntheguy@gmail.com>
+ * DATE  : 26 / Nov / 2011 
+ * LICENSE : WTFPL - Do What The Fuck You Want To Public License
+ * LICENSE URL: http://sam.zoy.org/wtfpl/
+ *
+ * DEPENDENCY: OSM2GEO entirely depends on jQuery for the XML parsing and
  * DOM traversing. Make sure you include <script src="somewhere/jquery.js">
  * </script> before you include osm2geo.js
  *
