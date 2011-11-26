@@ -36,12 +36,12 @@ var osm2geo = function(osm){
     var $ways = $xml.find("way");
     $ways.each(function(index, ele){
         var feature = {
-            "type" : "Feature",
             "geometry" : {
                 "type" : "LineString",
                 "coordinates" : []
             },
-            "properties" : {}
+           "type" : "Feature",
+           "properties" : {}
         };
         // List all the nodes
         var nodes = $(ele).find("nd");
