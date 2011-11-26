@@ -15,15 +15,7 @@
 </head>
 <body id="map" style="height: 500px; width: 1000px;" >
 <script type="text/javascript">
-    $.ajax({
-type : "GET",
-url : "map.osm",
-dataType : "xml",
-success : function(mapData){
-    var geo = osm2geo(mapData);
-   console.log(JSON.stringify(geo));
-
-   var po = org.polymaps;
+var po = org.polymaps;
 
 // lat=13.01268&lon=80.236362&zoom=15
 var map = po.map()
@@ -32,26 +24,46 @@ var map = po.map()
             .zoom(15)
             .zoomRange([13,16])
             .add(po.interact());
-map.add(po.image()
+
+/*
+    map.add(po.image()
         .url(po.url("http://{S}tile.cloudmade.com"
                 + "/d2126e5f6bd740079852c1ee3a900d68"
                 + "/29918/256/{Z}/{X}/{Y}.png") 
             .hosts(["a.", "b.", "c.", ""])));
+*/
 
-map.add(po.geoJson()
+function drawSVG(mapData, color){
+    var geo = osm2geo(mapData);
+    map.add(po.geoJson()
           .features(geo.features)
           .id("streets")
           .zoom(14)
           .tile(false)
           .on("load", po.stylist()
               .attr("stroke", function(){
-                    return "rgb(58,188,0)";
+                    return color;
                     })));
+}
 
-map.add(po.compass().pan("none"));
-
- }
+$.ajax({
+type : "GET",
+url : "map.osm",
+dataType : "xml",
+success : function(mapData){
+        drawSVG(mapData, "red");
+        }
 });
+
+$.ajax({
+type : "GET",
+url : "map2.osm",
+dataType : "xml",
+success : function(mapData){
+        drawSVG(mapData, "green");
+        }
+});
+
 
 
 </script>
