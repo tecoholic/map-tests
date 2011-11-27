@@ -63,9 +63,11 @@ var osm2geo = function(osm){
     // Ways
     var $ways = $("way", $xml);
     $ways.each(function(index, ele){
+        // TODO Polygon
         var feature = getFeature(ele, "LineString");
         // List all the nodes
         var nodes = $(ele).find("nd");
+        console.log(typeof nodes);
         nodes.each(function(index, nd){
             var node = $xml.find("node[id='"+$(nd).attr("ref")+"']"); // find the node with id ref'ed in way
             var cords = [parseFloat(node.attr("lon")), parseFloat(node.attr("lat"))]; // get the lat,lon of the node

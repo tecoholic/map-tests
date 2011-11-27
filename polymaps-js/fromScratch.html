@@ -48,7 +48,6 @@ function drawSVG(mapData, color){
                     })
               .attr("r", function(d){
                   if (d.geometry.type === 'Point'){
-                  console.log(JSON.stringify(d));
                   return "2";
                   }
                   else return undefined;
