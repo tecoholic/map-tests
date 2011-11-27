@@ -12,6 +12,10 @@
  * DOM traversing. Make sure you include <script src="somewhere/jquery.js">
  * </script> before you include osm2geo.js
  *
+ * USAGE: This script contains a single function -> geojson osm2geo(osmXML)
+ * It takes in a .osm (xml) as parameter and retruns the corresponding 
+ * GeoJson object.
+ *
  * ***********************************************************************/
 var osm2geo = function(osm){
     // Check wether the argument is a Jquery object and act accordingly
@@ -32,6 +36,16 @@ var osm2geo = function(osm){
         return bbox;
     }
     geo["bbox"] = getBounds($xml.find("bounds"));
+
+    // Function to set props for a feature
+    function setProps(element){
+        var properties = {};
+        var tags = $(element).find("tag");
+        tags.each(function(index, tag){
+            properties[$(tag).attr("k")] = $(tag).attr("v");
+        });
+        return properties;
+    }
     // List the ways and get the data
     var $ways = $("way", $xml);
     $ways.each(function(index, ele){
@@ -41,7 +55,7 @@ var osm2geo = function(osm){
                 "coordinates" : []
             },
            "type" : "Feature",
-           "properties" : {}
+           "properties" : setProps(ele)
         };
         // List all the nodes
         var nodes = $(ele).find("nd");
@@ -51,12 +65,7 @@ var osm2geo = function(osm){
             var cords = [parseFloat(node.attr("lon")), parseFloat(node.attr("lat"))]; // get the lat,lon of the node
             feature.geometry.coordinates.push(cords); // save the lat,lon in the feature
         });
-        // Save the properties of the way
-        var props = $(ele).find("tag");
-        props.each(function(index, tag){
-            feature.properties[$(tag).attr("k")] = $(tag).attr("v");
-        });
-        // Save the feature in the Main object
+       // Save the LineString in the Main object
         geo.features.push(feature);
     });
     
@@ -69,13 +78,9 @@ var osm2geo = function(osm){
                 "coordinates" : [parseFloat($(ele).attr('lon')), parseFloat($(ele).attr('lat'))]
             },
            "type" : "Feature",
-           "properties" : {}
+           "properties" : setProps(ele)
         };
-        var props = $(ele).find("tag");
-        props.each(function(inndex, tag){
-             feature.properties[$(tag).attr("k")] = $(tag).attr("v");
-        });
-        // Save the point in Main object
+       // Save the point in Main object
         geo.features.push(feature);
     });
     // Finally return the GeoJSON object
