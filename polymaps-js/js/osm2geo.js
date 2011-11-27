@@ -16,6 +16,9 @@
  * It takes in a .osm (xml) as parameter and retruns the corresponding 
  * GeoJson object.
  *
+ * LIMITATION: As of now all Ways are made into LineString. No "Polygon"
+ * features are created.
+ *
  * ***********************************************************************/
 var osm2geo = function(osm){
     // Check wether the argument is a Jquery object and act accordingly
@@ -46,7 +49,7 @@ var osm2geo = function(osm){
         });
         return properties;
     }
-    // Generic function to create a feature
+    // Generic function to create a feature of given type
     function getFeature(element, type){
         return {
             "geometry" : {
@@ -57,13 +60,12 @@ var osm2geo = function(osm){
             "properties" : setProps(element)
         };
     }
-    // List the ways and get the data
+    // Ways
     var $ways = $("way", $xml);
     $ways.each(function(index, ele){
         var feature = getFeature(ele, "LineString");
         // List all the nodes
         var nodes = $(ele).find("nd");
-        // TODO Find the polygons by comparing first and last node
         nodes.each(function(index, nd){
             var node = $xml.find("node[id='"+$(nd).attr("ref")+"']"); // find the node with id ref'ed in way
             var cords = [parseFloat(node.attr("lon")), parseFloat(node.attr("lat"))]; // get the lat,lon of the node
@@ -73,7 +75,7 @@ var osm2geo = function(osm){
         geo.features.push(feature);
     });
     
-    // Finding the point features in the OSM Dataset
+    // Points (POI)
     var $points = $("node:has('tag')", $xml);
     $points.each(function(index, ele){
         var feature = getFeature(ele, "Point");
