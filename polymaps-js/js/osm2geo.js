@@ -60,14 +60,15 @@ var osm2geo = function(osm){
     // Ways
     var $ways = $("way", $xml);
     $ways.each(function(index, ele){
+        var feature = new Object;
         // List all the nodes
         var nodes = $(ele).find("nd");
         // If first and last nd are same, then its a polygon
         if($(nodes).last().attr("ref") === $(nodes).first().attr("ref")){
-            var feature = getFeature(ele, "Polygon");
+            feature = getFeature(ele, "Polygon");
             feature.geometry.coordinates.push([]);
         }else{
-            var feature = getFeature(ele, "LineString");
+            feature = getFeature(ele, "LineString");
         }
         nodes.each(function(index, nd){
             var node = $xml.find("node[id='"+$(nd).attr("ref")+"']"); // find the node with id ref'ed in way
