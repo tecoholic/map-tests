@@ -46,17 +46,21 @@ var osm2geo = function(osm){
         });
         return properties;
     }
+    // Generic function to create a feature
+    function getFeature(element, type){
+        return {
+            "geometry" : {
+                "type" : type,
+                "coordinates" : []
+            },
+            "type" : "Feature",
+            "properties" : setProps(element)
+        };
+    }
     // List the ways and get the data
     var $ways = $("way", $xml);
     $ways.each(function(index, ele){
-        var feature = {
-            "geometry" : {
-                "type" : "LineString",
-                "coordinates" : []
-            },
-           "type" : "Feature",
-           "properties" : setProps(ele)
-        };
+        var feature = getFeature(ele, "LineString");
         // List all the nodes
         var nodes = $(ele).find("nd");
         // TODO Find the polygons by comparing first and last node
@@ -72,14 +76,9 @@ var osm2geo = function(osm){
     // Finding the point features in the OSM Dataset
     var $points = $("node:has('tag')", $xml);
     $points.each(function(index, ele){
-        var feature = {
-            "geometry" : {
-                "type" : "Point",
-                "coordinates" : [parseFloat($(ele).attr('lon')), parseFloat($(ele).attr('lat'))]
-            },
-           "type" : "Feature",
-           "properties" : setProps(ele)
-        };
+        var feature = getFeature(ele, "Point");
+        feature.geometry.coordinates.push(parseFloat($(ele).attr('lon')));
+        feature.geometry.coordinates.push(parseFloat($(ele).attr('lat')));
        // Save the point in Main object
         geo.features.push(feature);
     });
