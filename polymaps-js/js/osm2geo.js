@@ -33,7 +33,7 @@ var osm2geo = function(osm){
     }
     geo["bbox"] = getBounds($xml.find("bounds"));
     // List the ways and get the data
-    var $ways = $xml.find("way");
+    var $ways = $("way", $xml);
     $ways.each(function(index, ele){
         var feature = {
             "geometry" : {
@@ -45,11 +45,11 @@ var osm2geo = function(osm){
         };
         // List all the nodes
         var nodes = $(ele).find("nd");
+        // TODO Find the polygons by comparing first and last node
         nodes.each(function(index, nd){
             var node = $xml.find("node[id='"+$(nd).attr("ref")+"']"); // find the node with id ref'ed in way
             var cords = [parseFloat(node.attr("lon")), parseFloat(node.attr("lat"))]; // get the lat,lon of the node
             feature.geometry.coordinates.push(cords); // save the lat,lon in the feature
-            // FIXME Find the attributes of the node and save them somewhere
         });
         // Save the properties of the way
         var props = $(ele).find("tag");
@@ -59,7 +59,25 @@ var osm2geo = function(osm){
         // Save the feature in the Main object
         geo.features.push(feature);
     });
-
+    
+    // Finding the point features in the OSM Dataset
+    var $points = $("node:has('tag')", $xml);
+    $points.each(function(index, ele){
+        var feature = {
+            "geometry" : {
+                "type" : "Point",
+                "coordinates" : [parseFloat($(ele).attr('lon')), parseFloat($(ele).attr('lat'))]
+            },
+           "type" : "Feature",
+           "properties" : {}
+        };
+        var props = $(ele).find("tag");
+        props.each(function(inndex, tag){
+             feature.properties[$(tag).attr("k")] = $(tag).attr("v");
+        });
+        // Save the point in Main object
+        geo.features.push(feature);
+    });
     // Finally return the GeoJSON object
     return geo;
 

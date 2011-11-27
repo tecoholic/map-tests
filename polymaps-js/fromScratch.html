@@ -7,10 +7,15 @@
     <script src="js/jquery-1.7.min.js" type="text/javascript"></script>
     <script src="js/osm2geo.js" type="text/javascript"></script>
     <style type="text/css">
-        #streets path{
+        path{
             fill: none;
-            stroke-width: 2;
+            stroke-width: 1;
         }
+        circle{
+            fill: none;
+        }
+        
+        
     </style>
 </head>
 <body id="map" style="height: 500px; width: 1000px;" >
@@ -37,13 +42,20 @@ function drawSVG(mapData, color){
     var geo = osm2geo(mapData);
     map.add(po.geoJson()
           .features(geo.features)
-          .id("streets")
           .zoom(14)
           .tile(false)
           .on("load", po.stylist()
               .attr("stroke", function(){
                     return color;
-                    })));
+                    })
+              .attr("r", function(d){
+                  if (d.geometry.type === 'Point'){
+                  console.log(JSON.stringify(d));
+                  return "2";
+                  }
+                  else return undefined;
+                            
+                  })));
 }
 
 $.ajax({
@@ -63,7 +75,6 @@ success : function(mapData){
         drawSVG(mapData, "green");
         }
 });
-
 
 
 </script>
