@@ -38,6 +38,7 @@ var map = po.map()
 
 function drawSVG(mapData, color){
     var geo = osm2geo(mapData);
+    console.log(JSON.stringify(geo));
     map.add(po.geoJson()
           .features(geo.features)
           .zoom(14)
