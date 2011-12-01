@@ -46,6 +46,19 @@ if(!Array.prototype.lat){
         return this[this.length-2]; // latitude is the last col in csv
     }
 }
+if(!Array.prototype.time){
+    Array.prototype.lat = function (){
+        return this[0]; // time is the first col in csv
+    }
+}
+/*
+TODO
+1. Include date.js and parse time
+2. Save the time values in the GeoJSON property list
+3. Show coloring based on the speed - compute speed first
+4. Implement a slider selector to select a time limit
+
+*/
 function createJSON(csv){
     var geo = {
         "type" : "FeatureCollection",
@@ -100,27 +113,6 @@ success : function(data){
     drawSVG( data , "blue");
 }
 });
-
-
-/*
-function drawSVG(mapData, color){
-    var geo = osm2geo(mapData);
-    map.add(po.geoJson()
-          .features(geo.features)
-          .zoom(14)
-          .tile(false)
-          .on("load", po.stylist()
-              .attr("stroke", function(){
-                    return color;
-                    })
-              .attr("r", function(d){
-                  if (d.geometry.type === 'Point'){
-                  return "2";
-                  }
-                  else return undefined;
-                  })));
-}
-*/
 
 
 </script>
