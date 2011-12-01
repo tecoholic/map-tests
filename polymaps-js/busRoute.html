@@ -24,8 +24,8 @@ var po = org.polymaps;
 // 13.098159,80.16945
 var map = po.map()
             .container(document.getElementById('map').appendChild(po.svg("svg")))
-            .center({ lat: 13.098159, lon: 80.16945 })
-            .zoom(12)
+            .center({ lat: 13.16159, lon: 80.16945 })
+            .zoom(13)
             .zoomRange([12,15])
             .add(po.interact());
 /* map.add(po.image()
@@ -49,6 +49,11 @@ if(!Array.prototype.lat){
 if(!Array.prototype.time){
     Array.prototype.time = function (){
         return this[0]; // time is the first col in csv
+    }
+}
+if(!Array.prototype.speed){
+    Array.prototype.speed = function (){
+        return this[1]; // time is the first col in csv
     }
 }
 /*
@@ -85,10 +90,12 @@ function createJSON(csv){
         };
          feature.geometry.coordinates.push([parseFloat(thisRow.lon()),parseFloat(thisRow.lat())]);
          feature.geometry.coordinates.push([parseFloat(nextRow.lon()),parseFloat(nextRow.lat())]);
-         feature.properties["start"] = thisRow.time().replace(/\./g, ":");
-         feature.properties["end"] = nextRow.time().replace(/\./g, ":");
+         feature.properties["speed"] = parseInt(nextRow.speed()); // Using CSV speed for coloring
+         // XXX Too much computation with time
+         // Using the Speed from the CSV for now
+         //feature.properties["start"] = thisRow.time().replace(/\./g, ":");
+         //feature.properties["end"] = nextRow.time().replace(/\./g, ":");
          /*
-         // FIXME include time string
          if(i===1){
          var time = Date.parse(thisRow.time().replace(/\./g, ":"));
          var time2 = Date.parse(nextRow.time().replace(/\./g, ":"));
@@ -98,7 +105,7 @@ function createJSON(csv){
          geo.features.push(feature);
 
          // XXX for quick debugging
-         // if ( i === 2){ break; }
+          if ( i === 900 ){ break; }
          }
     }
     return geo;
@@ -107,15 +114,19 @@ function createJSON(csv){
 function drawSVG(mapData, color){
     var geo = createJSON(mapData); 
   //   console.log(JSON.stringify(geo));
-  /*  map.add(po.geoJson()
+  map.add(po.geoJson()
           .features(geo.features)
           .zoom(12)
           .tile(false)
           .on("load", po.stylist()
-              .attr("stroke", function(){
-                    return color;
-                    })
-              )); */
+              .attr("stroke", function(l){
+              if(l.properties.speed < 10){ return "black";}
+              else if ((l.properties.speed > 10) && (l.properties.speed < 20)){ return "red"}
+              else if ((l.properties.speed > 20) && (l.properties.speed < 30)){ return "yellow"}
+              else if (l.properties.speed > 30){ return "green"}
+
+              })
+              )); 
 }
 
 $.ajax({
