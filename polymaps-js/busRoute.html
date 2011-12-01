@@ -27,7 +27,7 @@
             z-index: 99;
         }
         #slider{
-            width: 200px;
+            width: 240px;
             height: 5px;
             margin: 0;
             padding: 0;
@@ -45,10 +45,10 @@
 // Slider Code
 $(function(){
         $("#slider").slider({
-                value:100,
-                min: 0,
-                max: 500,
-                step: 50,
+                value:0800,
+                min: 0000,
+                max: 2300,
+                step: 100,
                 slide: function(event, ui){
                     $("#slide-tip").html(ui.value);
                 }
@@ -128,6 +128,8 @@ function createJSON(csv){
          feature.geometry.coordinates.push([parseFloat(thisRow.lon()),parseFloat(thisRow.lat())]);
          feature.geometry.coordinates.push([parseFloat(nextRow.lon()),parseFloat(nextRow.lat())]);
          feature.properties["speed"] = parseInt(nextRow.speed()); // Using CSV speed for coloring
+         var time = Date.parse(nextRow[0].replace(/\./g, ":"));
+         feature.properties["time"] = time.getHours()*100+time.getMinutes();
          // XXX Too much computation with time
          // Using the Speed from the CSV for now
          //feature.properties["start"] = thisRow.time().replace(/\./g, ":");
@@ -142,7 +144,7 @@ function createJSON(csv){
          geo.features.push(feature);
 
          // XXX for quick debugging
-          if ( i === 300 ){ break; }
+          if ( i === 3 ){ break; }
          }
     }
     return geo;
