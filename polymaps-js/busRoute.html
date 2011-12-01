@@ -5,6 +5,7 @@
 	<title>Busroute from CSV</title>
     <script src="js/polymaps.min.js" type="text/javascript"></script>
     <script src="js/jquery-1.7.min.js" type="text/javascript"></script>
+    <script src="js/date.js" type="text/javascript"></script>
     <style type="text/css">
         path{
             fill: none;
@@ -27,13 +28,12 @@ var map = po.map()
             .zoom(12)
             .zoomRange([12,15])
             .add(po.interact());
-map.add(po.image()
+/* map.add(po.image()
    .url(po.url("http://{S}tile.cloudmade.com"
             + "/d2126e5f6bd740079852c1ee3a900d68"
             + "/29918/256/{Z}/{X}/{Y}.png") 
         .hosts(["a.", "b.", "c.", ""])));
-
-
+*/
 // Declaring prototypes to get lat and lon from the CSV
 // NOTE: Change this whenever required XXX
 if(!Array.prototype.lon){
@@ -47,7 +47,7 @@ if(!Array.prototype.lat){
     }
 }
 if(!Array.prototype.time){
-    Array.prototype.lat = function (){
+    Array.prototype.time = function (){
         return this[0]; // time is the first col in csv
     }
 }
@@ -85,7 +85,20 @@ function createJSON(csv){
         };
          feature.geometry.coordinates.push([parseFloat(thisRow.lon()),parseFloat(thisRow.lat())]);
          feature.geometry.coordinates.push([parseFloat(nextRow.lon()),parseFloat(nextRow.lat())]);
+         feature.properties["start"] = thisRow.time().replace(/\./g, ":");
+         feature.properties["end"] = nextRow.time().replace(/\./g, ":");
+         /*
+         // FIXME include time string
+         if(i===1){
+         var time = Date.parse(thisRow.time().replace(/\./g, ":"));
+         var time2 = Date.parse(nextRow.time().replace(/\./g, ":"));
+         console.log((time2-time)/1000/60);
+         }
+         */
          geo.features.push(feature);
+
+         // XXX for quick debugging
+         // if ( i === 2){ break; }
          }
     }
     return geo;
@@ -93,8 +106,8 @@ function createJSON(csv){
 
 function drawSVG(mapData, color){
     var geo = createJSON(mapData); 
-    console.log(JSON.stringify(geo));
-    map.add(po.geoJson()
+  //   console.log(JSON.stringify(geo));
+  /*  map.add(po.geoJson()
           .features(geo.features)
           .zoom(12)
           .tile(false)
@@ -102,7 +115,7 @@ function drawSVG(mapData, color){
               .attr("stroke", function(){
                     return color;
                     })
-              ));
+              )); */
 }
 
 $.ajax({
