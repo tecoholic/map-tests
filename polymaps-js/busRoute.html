@@ -83,16 +83,7 @@ if(!Array.prototype.lat){
         return this[this.length-2]; // latitude is the last col in csv
     }
 }
-if(!Array.prototype.time){
-    Array.prototype.time = function (){
-        return this[0]; // time is the first col in csv
-    }
-}
-if(!Array.prototype.speed){
-    Array.prototype.speed = function (){
-        return this[1]; // time is the first col in csv
-    }
-}
+
 /*
 TODO
 1. Include date.js and parse time
@@ -127,7 +118,7 @@ function createJSON(csv){
         };
          feature.geometry.coordinates.push([parseFloat(thisRow.lon()),parseFloat(thisRow.lat())]);
          feature.geometry.coordinates.push([parseFloat(nextRow.lon()),parseFloat(nextRow.lat())]);
-         feature.properties["speed"] = parseInt(nextRow.speed()); // Using CSV speed for coloring
+         feature.properties["speed"] = parseInt(nextRow[1]); // Using CSV speed for coloring
          var time = Date.parse(nextRow[0].replace(/\./g, ":"));
          feature.properties["time"] = time.getHours()*100+time.getMinutes();
          // XXX Too much computation with time
