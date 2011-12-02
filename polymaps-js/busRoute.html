@@ -11,32 +11,16 @@
     <style type="text/css">
         path{
             fill: none;
-            stroke-width: 1;
+            stroke-width: 4;
         }
         circle{
             fill: none;
         }
         #map {
-            border: 1px solid #DDD;
+            border: 1px solid #AAA;
             z-index: 0;
         }
-        #slider-con{
-            position: absolute;
-            bottom: 0px;
-            left: 20px;
-            z-index: 99;
-        }
-        #slider{
-            width: 240px;
-            height: 5px;
-            margin: 0;
-            padding: 0;
-        }
-        .ui-slider-handle{
-            height: 12px !important;
-            width: 12px !important;
-        }
-    </style>
+  </style>
 
 </head>
 <body>
@@ -52,12 +36,13 @@ var map = po.map()
             .zoom(12)
             .zoomRange([12,15])
             .add(po.interact());
-/* map.add(po.image()
+map.add(po.compass().pan("none"));
+ map.add(po.image()
    .url(po.url("http://{S}tile.cloudmade.com"
             + "/d2126e5f6bd740079852c1ee3a900d68"
-            + "/29918/256/{Z}/{X}/{Y}.png") 
+            + "/998/256/{Z}/{X}/{Y}.png") 
         .hosts(["a.", "b.", "c.", ""])));
-*/
+
 
 function showPath(hour, previous){
     var layer = po.geoJson()
