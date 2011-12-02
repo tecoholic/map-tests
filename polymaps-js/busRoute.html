@@ -49,7 +49,7 @@ var po = org.polymaps;
 var map = po.map()
             .container(document.getElementById('map').appendChild(po.svg("svg")))
             .center({ lat: 13.16159, lon: 80.16945 })
-            .zoom(13)
+            .zoom(12)
             .zoomRange([12,15])
             .add(po.interact());
 /* map.add(po.image()
@@ -59,22 +59,25 @@ var map = po.map()
         .hosts(["a.", "b.", "c.", ""])));
 */
 
-function showPath(hour){
-    map.add(po.geoJson()
-          .url("path.php?hour="+hour)
-          .zoom(12)
-          .tile(false)
-          .on("load", po.stylist()
-              .attr("stroke", function(l){
-              if(l.properties.speed < 10){ return "black";}
-              else if ((l.properties.speed > 10) && (l.properties.speed < 20)){ return "red"}
-              else if ((l.properties.speed > 20) && (l.properties.speed < 30)){ return "yellow"}
-              else if (l.properties.speed > 30){ return "green"}
-
-              })
-              ));
+function showPath(hour, previous){
+    var layer = po.geoJson()
+                .url("path.php?hour="+hour)
+                .zoom(12)
+                .tile(false)
+                .on("load", po.stylist()
+                        .attr("stroke", function(l){
+                            if(l.properties.speed < 10){ return "black";}
+                            else if ((l.properties.speed > 10) && (l.properties.speed < 20)){ return "red"}
+                            else if ((l.properties.speed > 20) && (l.properties.speed < 30)){ return "yellow"}
+                            else if (l.properties.speed > 30){ return "green"}
+                            }));
+    if (previous != undefined){
+        map.remove(previous);
+    }
+    map.add(layer);
+    return layer;
 }
- 
+var nowShowing;
 // Slider Code
 $(function(){
         $("#slider").slider({
@@ -84,7 +87,7 @@ $(function(){
                 step: 1,
                 slide: function(event, ui){
                     $("#slide-tip").html(ui.value);
-                    showPath(ui.value);
+                    nowShowing = showPath(ui.value, nowShowing);
                 }
             });
         $("#slide-tip").html($("#slider").slider("value"));
