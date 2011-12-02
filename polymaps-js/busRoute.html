@@ -42,19 +42,6 @@
 <body>
     <div id="map" style="height: 500px; width: 1000px;"></div>
 <script type="text/javascript">
-// Slider Code
-$(function(){
-        $("#slider").slider({
-                value:0800,
-                min: 0000,
-                max: 2300,
-                step: 100,
-                slide: function(event, ui){
-                    $("#slide-tip").html(ui.value);
-                }
-            });
-        $("#slide-tip").html($("#slider").slider("value"));
-        });
 // Map code
 var po = org.polymaps;
 // lat=13.01268&lon=80.236362&zoom=15
@@ -72,8 +59,9 @@ var map = po.map()
         .hosts(["a.", "b.", "c.", ""])));
 */
 
-map.add(po.geoJson()
-          .url("path.php")
+function showPath(hour){
+    map.add(po.geoJson()
+          .url("path.php?hour="+hour)
           .zoom(12)
           .tile(false)
           .on("load", po.stylist()
@@ -84,7 +72,23 @@ map.add(po.geoJson()
               else if (l.properties.speed > 30){ return "green"}
 
               })
-              )); 
+              ));
+}
+ 
+// Slider Code
+$(function(){
+        $("#slider").slider({
+                value:9,
+                min: 0,
+                max: 23,
+                step: 1,
+                slide: function(event, ui){
+                    $("#slide-tip").html(ui.value);
+                    showPath(ui.value);
+                }
+            });
+        $("#slide-tip").html($("#slider").slider("value"));
+        });
 
 </script>
 <div id="slider-con">
