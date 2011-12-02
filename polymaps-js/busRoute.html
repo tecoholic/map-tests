@@ -71,6 +71,23 @@ var map = po.map()
             + "/29918/256/{Z}/{X}/{Y}.png") 
         .hosts(["a.", "b.", "c.", ""])));
 */
+
+map.add(po.geoJson()
+          .url("path.php")
+          .zoom(12)
+          .tile(false)
+          .on("load", po.stylist()
+              .attr("stroke", function(l){
+              if(l.properties.speed < 10){ return "black";}
+              else if ((l.properties.speed > 10) && (l.properties.speed < 20)){ return "red"}
+              else if ((l.properties.speed > 20) && (l.properties.speed < 30)){ return "yellow"}
+              else if (l.properties.speed > 30){ return "green"}
+
+              })
+              )); 
+
+
+
 // Declaring prototypes to get lat and lon from the CSV
 // NOTE: Change this whenever required XXX
 if(!Array.prototype.lon){
@@ -159,7 +176,7 @@ function drawSVG(mapData, color){
               )); 
 }
 
-$.ajax({
+/*$.ajax({
 type : "GET",
 url : "busroute.csv",
 dataType : "text",
@@ -167,7 +184,7 @@ success : function(data){
     drawSVG( data , "blue");
 }
 });
-
+*/
 
 </script>
 <div id="slider-con">
