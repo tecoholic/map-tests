@@ -4,7 +4,7 @@ error_reporting(-1);
 if(isset($_GET["hour"])){ $hour = $_GET["hour"];} // For returning hour specific data
 
 // Variables and constants
-$file = "/home/teco/Projects/map-tests/polymaps-js/busroute.csv";
+$file = "busroute.csv";
 $row = 1;
 $geo = array("type" => "FeatureCollection",
              "features" => array(),
