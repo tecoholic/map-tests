@@ -1,7 +1,13 @@
 <?php
 error_reporting(-1);
 
-if(isset($_GET["hour"])){ $hour = $_GET["hour"];} // For returning hour specific data
+if(isset($_GET["hour"])){ 
+    $hour = $_GET["hour"];
+
+} 
+if(isset($_GET["min"])){
+    $min = $_GET["min"];
+}
 
 // Variables and constants
 $file = "busroute.csv";
@@ -19,8 +25,7 @@ if (($handle = fopen($file, "r")) !== FALSE) {
         if($row != 1){
 
             $time = date_parse($data[0]);
-            if($time["hour"] === 0+$hour){
- 
+            if(($time["hour"] === 0+$hour)&&($time["minute"] > $min) && ($time["minute"] < $min+30)){
                 // setting starting point
                 if(!$preset){
                     $preLat += $data[$num-2];

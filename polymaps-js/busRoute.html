@@ -24,6 +24,10 @@
         circle{
             fill: none;
         }
+        h1,h2,h3,h4,h5,p,a,span{
+            font-family: "Trebuchet MS",Verdana,Helvetica,Arial,sans-serif;
+        }
+        
         #container{
             height: 100%;
         }
@@ -39,6 +43,19 @@
             height: auto;
             float: left;
         }
+
+        #slider{
+            margin-top: 5px !important;
+        }
+        /* Slider resizing */
+        .ui-slider-horizontal{
+            height: 5px !important;
+        }
+        .ui-slider-handle{
+            height: 10px !important;
+            border-radius: 0px !important;
+            top: -0.2em !important;
+        }
   </style>
 
 </head>
@@ -46,7 +63,8 @@
     <div id="container">
         <div id="sidebar">
             <h3>Chennai Conjestion Map</h3><p>Based on Bus Speed Data</p>
-            <div id="slide-tip"></div>
+            <p><span style="font-size: 0.8em;">Move the slider to select a time frame</span></p>
+            <div style="margin-top: 5px; border: 1px solid #9CD; padding:3px;"><p style="font-size: 0.8em;">Time-frame: <span id="slide-tip"></span></p></div>
             <div id="slider"></div>
         </div>
         <div id="map"></div>
@@ -71,8 +89,12 @@
 
 
     function showPath(hour, previous){
+        var url2="path.php?";
+
+        if(hour.toString().split(".").length > 1){url2 = url2+"hour="+Math.floor(hour)+"&min=30";}
+        else{url2=url2+"hour="+hour+"&min=00";}
         var layer = po.geoJson()
-                .url("path.php?hour="+hour)
+                .url(url2)
                 .zoom(12)
                 .tile(false)
                 .on("load", po.stylist()
@@ -91,6 +113,11 @@
 
     var nowShowing;
     // Slider Code
+    function formatTime(value){
+        function pad(val){return (val < 10)?0+val.toString():val.toString();}
+        function tohrs(str){ return (str.split(".").length > 1)?str.split(".")[0]+"30":str+"00";}
+        return "<i>"+tohrs(pad(value))+" to "+tohrs(pad(value+0.5))+" hrs</i>";
+    }
     $(function(){
 
             $(window).resize(function(){
@@ -98,16 +125,16 @@
                 });
 
         $("#slider").slider({
-                value:9,
+                value:8,
                 min: 0,
                 max: 23,
-                step: 1,
+                step: 0.5,
                 slide: function(event, ui){
-                    $("#slide-tip").html(ui.value);
+                   $("#slide-tip").html(formatTime(ui.value));
                     nowShowing = showPath(ui.value, nowShowing);
                 }
             });
-        $("#slide-tip").html($("#slider").slider("value"));
+        $("#slide-tip").html("0800 to 0830 hrs");
 
         $('#map').height($(document).height()-5);
 
