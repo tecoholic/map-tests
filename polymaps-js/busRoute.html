@@ -27,7 +27,6 @@
         h1,h2,h3,h4,h5,p,a,span{
             font-family: "Trebuchet MS",Verdana,Helvetica,Arial,sans-serif;
         }
-        
         #container{
             height: 100%;
         }
@@ -43,7 +42,6 @@
             height: auto;
             float: left;
         }
-
         #slider{
             margin-top: 5px !important;
         }
@@ -64,8 +62,17 @@
         <div id="sidebar">
             <h3>Chennai Conjestion Map</h3><p>Based on Bus Speed Data</p>
             <p><span style="font-size: 0.8em;">Move the slider to select a time frame</span></p>
-            <div style="margin-top: 5px; border: 1px solid #9CD; padding:3px;"><p style="font-size: 0.8em;">Time-frame: <span id="slide-tip"></span></p></div>
             <div id="slider"></div>
+            <div style="margin-top: 5px; border: 1px solid #9CD; padding:3px;">
+                <p style="font-size: 0.8em;">Time-frame: <span id="slide-tip"></span></p>
+            </div>
+            <div class="ui-state-highlight ui-corner-all" style="margin-top: 10px; padding:10px;">
+                <p style="font-size: 0.7em;"><span class="ui-icon ui-icon-info" style="float:left;"></span>
+                This map has been created with a test data of the GPS Log data from the MTC [Metropolitan Transport Corporation (Chennai)]
+                The background tiles are served using  <a href="http://www.cloudmade.com">Cloudmade</a> web application tiles. 
+                This is written using the <a href="http://www.polymaps.org">Polymaps</a> javascript library.
+                </p>
+            </div>
         </div>
         <div id="map"></div>
     </div>
