@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-    <title>Chennai Congestion Map Using MTC Bus GPS Logs</title>
+    <meta charset="UTF-8">
+    <title></title>
     <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js">
     </script>
@@ -18,6 +18,7 @@
         body,html{
             padding: 0;
             margin: 0;
+            height: 100%;
         }
        h1,h2,h3,h4,h5,p,a,span{
             font-family: "Trebuchet MS",Verdana,Helvetica,Arial,sans-serif;
@@ -25,12 +26,11 @@
         #container{
             height: 100%;
         }
-        #map {
+        #map{
             width: 79%;
             border: 1px solid #666;
             float: left;
-            position: static;
-	    height: 100%;
+            height: 99%;
         }
         #sidebar{
             width: 19%;
@@ -38,66 +38,79 @@
             height: auto;
             float: left;
         }
-        #slider{
-            margin-top: 5px !important;
-        }
-            </style>
+        </style>
+            <script type="text/javascript">
+            $(window).resize(function(){
+                $("#map").height($(window).height() - 5);
+            });
+            </script>
 </head>
 <body>
     <div id="container">
-    	<div id="sidebar">
-    		<div id="top"></div>
-    		<div id="slider"></div>
-    		<div id="info"><p>Time Frame: </p><span id="slide-tip"></span></div>
-	</div>
-    	<div id="map"></div>
-	<script type="text/javascript">
-	/*
-	var url2="path.php?";
+        <div id="sidebar">
+            <div id="top"><h3>Chennai Traffic Congestion Mapping</h3><p style="font-size: 90%;">Using the sample GPS log from MTC Buses</p></div>
+            <div id="select">
 
-        if(hour.toString().split(".").length > 1){url2 = url2+"hour="+Math.floor(hour)+"&min=30";}
-        else{url2=url2+"hour="+hour+"&min=00";}
-	*/
+            </div>
+            <div class="ui-state-highlight ui-corner-all" style="margin-top: 10px; padding:10px;">
+                <p style="font-size: 0.7em;"><span class="ui-icon ui-icon-info" style="float:left;"></span>
+                This map has been created with a test data of the GPS Log data from the MTC [Metropolitan Transport Corporation (Chennai)]
+                The background tiles are served using  <a href="http://www.cloudmade.com">Cloudmade</a> web application tiles. 
+                This is written using the <a href="http://leaflet.cloudmade.com">LeafletJS</a> javascript library.
+                </p>
+            </div>
+ 
+        </div>
+        <div id="map"></div>
+        <script type="text/javascript">
+        /*
+            var url2="path.php?";
 
-	function formatTime(value){
-        	function pad(val){return (val < 10)?0+val.toString():val.toString();}
-        	function tohrs(str){ return (str.split(".").length > 1)?str.split(".")[0]+"30":str+"00";}
-        	return "<i>"+tohrs(pad(value))+" to "+tohrs(pad(value+0.5))+" hrs</i>";
-    	}
-
-	$(function(){
-
-        	$(window).resize(function(){
-        	        $("#map").height($(window).height() - 5);
-                });
-
-        $("#slider").slider({
-                value:8,
-                min: 0,
-                max: 23,
-                step: 0.5,
-                slide: function(event, ui){
-                   $("#slide-tip").html(formatTime(ui.value));
-                    // Code to show line overlay should come here
-                }
+            if(hour.toString().split(".").length > 1){url2 = url2+"hour="+Math.floor(hour)+"&min=30";}
+            else{url2=url2+"hour="+hour+"&min=00";}
+        */
+/*
+        $(function(){
+            $(window).resize(function(){
+                $("#map").height($(window).height() - 5);
             });
-        $("#slide-tip").html("0800 to 0830 hrs");
-
-        $('#map').height($(document).height()-5);
-
-        });	
-
-	</script>
+            $('#map').height($(document).height()-5);
+        });
+*/
+        </script>
     </div>
     <script type="text/javascript">
         var map = new L.Map('map');
-        
-        var cloudUrl = "http://{s}.tile.cloudmade.com/d2126e5f6bd740079852c1ee3a900d68/997/256/{z}/{x}/{y}.png",
-        cloudAttr = 'Map tile data &copy; 2011 OpenStreetMap, Tiles &copy; 2011 CloudMade',
+
+        var cloudUrl = "http://{s}.tile.cloudmade.com/d2126e5f6bd740079852c1ee3a900d68/22677/256/{z}/{x}/{y}.png",
+        cloudAttr = 'Map tile data &copy; 2011 OpenStreetMap, Tiles &copy; 2011 CloudMade, Overlay Data: MTC Bus GPS Log Sample',
         cloudmade = new L.TileLayer(cloudUrl, {maxZoom: 15, attribution: cloudAttr});
-        
-        var avadi = new L.LatLng(13.17, 80.1); // Longitude, Latitude
+       // 80.204895,13.069958 -104.98999178409576, 39.74683938093904
+        var avadi = new L.LatLng(13.069958, 80.204895);
         map.setView(avadi, 13).addLayer(cloudmade);
-    </script>
+
+        $.getJSON("path.php?hour=9&min=30", function(route){
+                    var geo = route;
+                    var gl = new L.GeoJSON();
+                    gl.on("featureparse", function(e){
+                            // Styling
+                            var color;
+                            if(e.properties.speed < 10){ color = 'black'; }
+                            else if (e.properties.speed > 10 && e.properties.speed < 20 ){color='red';}
+                            else if (e.properties.speed > 20 && e.properties.speed < 30 ){color='yellow';}
+                            else if (e.properties.speed > 30 ){color='green'}
+                            e.layer.setStyle({"weight":5,
+                                "color": color,
+                                "opacity": 1});
+                            // Popup
+                            e.layer.bindPopup( e.properties.speed + " km/hr");
+                            });
+                    map.addLayer(gl);
+                    gl.addGeoJSON(geo);
+
+        });
+
+
+   </script>
 </body>
 </html>
