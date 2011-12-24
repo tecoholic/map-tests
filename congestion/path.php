@@ -2,24 +2,29 @@
 error_reporting(-1);
 
 if(isset($_GET["hour"])){ 
-    $hour = $_GET["hour"];
+  $hour = $_GET["hour"];
 
 } 
 if(isset($_GET["min"])){
-    $min = $_GET["min"];
+  $min = $_GET["min"];
 }
 
 // Variables and constants
-$file = "busroute.csv";
-$row = 1;
+// $file = "busroute.csv";
+
 $geo = array("type" => "FeatureCollection",
              "features" => array(),
          );
-$preLat = 0;
-$preLon = 0;
-$preset = False;
 // Parse the CSV file
-if (($handle = fopen($file, "r")) !== FALSE) {
+function parseCSV($filename){
+    global $hour, $min, $geo;
+
+    $row = 1;
+    $preLat = 0;
+    $preLon = 0;
+    $preset = False;
+
+if (($handle = fopen($filename, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
         $num = count($data);
         if($row != 1){
@@ -54,7 +59,16 @@ if (($handle = fopen($file, "r")) !== FALSE) {
     }
     fclose($handle);
 }
-else die("error opening file");
+else die("error opening file".$filename);
+}
+
+$gps_logs = glob("gps-logs/"."*.csv");
+foreach($gps_logs as $file){
+    parseCSV($file);
+}
+
+
+
 
 echo(json_encode($geo));
 ?>
