@@ -10,15 +10,16 @@ if(isset($_GET["min"])){
 }
 
 // Variables and constants
-// $file = "busroute.csv";
 
-$geo = array("type" => "FeatureCollection",
+$traces = array();
+
+// Parse the CSV file and create the GeoJSON
+function csv_to_geo($filename){
+    global $hour, $min;
+
+    $geo = array("type" => "FeatureCollection",
              "features" => array(),
-         );
-// Parse the CSV file
-function parseCSV($filename){
-    global $hour, $min, $geo;
-
+             );
     $row = 1;
     $preLat = 0;
     $preLon = 0;
@@ -59,16 +60,30 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     }
     fclose($handle);
 }
-else die("error opening file".$filename);
+else error_log("Error while opening file: ".$filename."\n", 3, "csv-errors.log");
+
+return $geo;
+
 }
 
+// Scan for the files & make geojson
 $gps_logs = glob("gps-logs/"."*.csv");
 foreach($gps_logs as $file){
-    parseCSV($file);
+    list($dir, $filename) = explode("/", $file);
+    array_push($traces, array("trace_name" => $filename,
+                             "geojson" => csv_to_geo($file)
+                         )
+                     );
 }
+/*
+ *  JSON format: [ {
+ *                  "trace_name" : "file_name",
+ *                  "geojson" : { "type" : "FeatureCollection", "geometry" : .......... }
+ *                 },
+ *                 {
+ *                 "trace_name" : ........ } ]
+ *
+ */
+echo(json_encode($traces));
 
-
-
-
-echo(json_encode($geo));
 ?>
