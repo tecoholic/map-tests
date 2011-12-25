@@ -86,8 +86,8 @@
         cloudAttr = 'Map tile data &copy; 2011 OpenStreetMap, Tiles &copy; 2011 CloudMade, Overlay Data: MTC Bus GPS Log Sample',
         cloudmade = new L.TileLayer(cloudUrl, {maxZoom: 15, attribution: cloudAttr});
        // 80.204895,13.069958 -104.98999178409576, 39.74683938093904
-        var avadi = new L.LatLng(13.069958, 80.204895);
-        map.setView(avadi, 12);//.addLayer(cloudmade);
+        var avadi = new L.LatLng(13.00, 80.204895);
+        map.setView(avadi, 12).addLayer(cloudmade);
 
         var routesList = new Object;
         var files = new Array;
