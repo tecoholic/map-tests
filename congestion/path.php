@@ -43,7 +43,6 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
                     $lon = 0+$data[$num-1];
 
                     // Caluculating distance using http://en.wikipedia.org/wiki/Great-circle_distance#Formulas
-                    /*
                     $distance = deg2rad(
                                     atan2(
                                         sqrt(
@@ -52,16 +51,19 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
                                         ),
                                         (sin($lat)*sin($preLat) + cos($lat)*cos($preLat)*cos($preLon-$lon)
                                     )
-                                ))*6372.795*1000;
-                    */
-                    $feature = array("type" => "Feature",
-                                    "geometry" => array(
-                                                        "type" => "LineString",
-                                                        "coordinates" => array(array($preLon, $preLat),array($lon, $lat))
-                                                        ),
-                                    "properties" => array("speed" => 0+$data[1], "time" => $data[0], "distance" => $data[2]*1000)
-                            );
-                    array_push($geo["features"],$feature);
+                                ))*6372.795;
+                    // Construct the LineString and push it inside only if distance < 250m
+                    if($distance < 0.250){
+                        $feature = array("type" => "Feature",
+                            "geometry" => array(
+                                "type" => "LineString",
+                                "coordinates" => array(array($preLon, $preLat),array($lon, $lat))
+                            ),
+                            "properties" => array("speed" => 0+$data[1], "time" => $data[0], "distance" => $data[2])
+                        );
+                        array_push($geo["features"],$feature);
+                    }
+
                     $preLat = $lat; // reassign lat,lon for next segment
                     $preLon = $lon;
                }

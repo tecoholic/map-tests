@@ -114,8 +114,11 @@
                                 "color": color,
                                 "opacity": 1});
                            // Popup
-                            e.layer.bindPopup( e.properties.speed + " km/hr<br />" + e.properties.time);
-                            
+                            e.layer.bindPopup( e.properties.distance*1000.00+ " m<br />" + e.properties.speed + " km/hr<br />" + e.properties.time);
+                            // Visual feedback of Clicks :P
+                            e.layer.on('click', function(){
+                                    e.layer.setStyle({'opacity' : 0.5});
+                                });
                             });
                     map.addLayer(files[i]);
                     files[i].addGeoJSON(geo);
@@ -128,7 +131,6 @@
                     map.addControl(layersControl);
         });
 
-        
-   </script>
+           </script>
 </body>
 </html>
