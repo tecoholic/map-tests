@@ -38,6 +38,11 @@
             height: auto;
             float: left;
         }
+        #debug{
+            overflow-y: auto;
+            font-size: 9px;
+            height: 100px;
+        }
         </style>
             <script type="text/javascript">
             $(window).resize(function(){
@@ -58,6 +63,8 @@
                 The background tiles are served using  <a href="http://www.cloudmade.com">Cloudmade</a> web application tiles. 
                 This is written using the <a href="http://leaflet.cloudmade.com">LeafletJS</a> javascript library.
                 </p>
+            </div>
+            <div id="debug">
             </div>
  
         </div>
@@ -92,7 +99,7 @@
         var routesList = new Object;
         var files = new Array;
 
-        $.getJSON("path.php?hour=9&min=30", function(routes){
+        $.getJSON("path.php?hour=10&min=30", function(routes){
                     $(routes).each(function(i,route){
                         var geo = route.geojson;
                     files.push(new L.GeoJSON());
@@ -106,8 +113,9 @@
                             e.layer.setStyle({"weight":5,
                                 "color": color,
                                 "opacity": 1});
-                            // Popup
-                            e.layer.bindPopup( e.properties.speed + " km/hr");
+                           // Popup
+                            e.layer.bindPopup( e.properties.speed + " km/hr<br />" + e.properties.time);
+                            
                             });
                     map.addLayer(files[i]);
                     files[i].addGeoJSON(geo);
