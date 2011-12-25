@@ -87,12 +87,16 @@
         cloudmade = new L.TileLayer(cloudUrl, {maxZoom: 15, attribution: cloudAttr});
        // 80.204895,13.069958 -104.98999178409576, 39.74683938093904
         var avadi = new L.LatLng(13.069958, 80.204895);
-        map.setView(avadi, 13).addLayer(cloudmade);
+        map.setView(avadi, 12);//.addLayer(cloudmade);
 
-        $.getJSON("path.php?hour=9&min=30", function(route){
-                    var geo = route;
-                    var gl = new L.GeoJSON();
-                    gl.on("featureparse", function(e){
+        var routesList = new Object;
+        var files = new Array;
+
+        $.getJSON("path.php?hour=9&min=30", function(routes){
+                    $(routes).each(function(i,route){
+                        var geo = route.geojson;
+                    files.push(new L.GeoJSON());
+                    files[i].on("featureparse", function(e){
                             // Styling
                             var color;
                             if(e.properties.speed < 10){ color = 'black'; }
@@ -105,12 +109,18 @@
                             // Popup
                             e.layer.bindPopup( e.properties.speed + " km/hr");
                             });
-                    map.addLayer(gl);
-                    gl.addGeoJSON(geo);
+                    map.addLayer(files[i]);
+                    files[i].addGeoJSON(geo);
 
+                    routesList[route.trace_name] = files[i];
+
+                        });
+
+                    var layersControl = new L.Control.Layers(null, routesList);
+                    map.addControl(layersControl);
         });
 
-
+        
    </script>
 </body>
 </html>
