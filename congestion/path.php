@@ -41,12 +41,24 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
                 else{
                     $lat = 0+$data[$num-2];
                     $lon = 0+$data[$num-1];
+
+                    // Caluculating distance using http://en.wikipedia.org/wiki/Great-circle_distance#Formulas
+                    $distance = deg2rad(
+                                    atan2(
+                                        sqrt(
+                                            pow(cos($lat)*sin($preLon-$lon), 2) +
+                                            pow(cos($preLat)*sin($lat) - sin($preLat)*cos($lat)*cos($preLon-$lon), 2)
+                                        ),
+                                        (sin($lat)*sin($preLat) + cos($lat)*cos($preLat)*cos($preLon-$lon)
+                                    )
+                                ))*6372.795*1000;
+
                     $feature = array("type" => "Feature",
                                     "geometry" => array(
                                                         "type" => "LineString",
                                                         "coordinates" => array(array($preLon, $preLat),array($lon, $lat))
                                                         ),
-                                    "properties" => array("speed" => 0+$data[1], "time" => $data[0])
+                                    "properties" => array("speed" => 0+$data[1], "time" => $data[0], "distance" => $distance)
                             );
                     array_push($geo["features"],$feature);
                     $preLat = $lat; // reassign lat,lon for next segment
