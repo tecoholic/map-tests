@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="leaflet/leaflet.css" />
     <!--[if lte IE 8]><link rel="stylesheet" href="leaflet/leaflet.ie.css" /><![endif]-->
     <script type="text/javascript" src="leaflet/leaflet.js"></script>
+    <script src="path.js" type="text/javascript"></script>
        <style type="text/css">
         *{
             margin: 0;
@@ -47,6 +48,16 @@
             height: 500px;
             overflow-y: scroll;
         }
+        #select{
+            margin-top:10px;
+        }
+        h3{
+            border-bottom: 2px solid #FFCD83;
+        }
+        #timeframe{
+            border: 1px solid #444;
+            width: 100px;
+        }
         </style>
             <script type="text/javascript">
             $(window).resize(function(){
@@ -57,8 +68,44 @@
 <body>
     <div id="container">
         <div id="sidebar">
-            <div id="top"><h3>Chennai Traffic Congestion Mapping</h3><p style="font-size: 90%;">Using the sample GPS log from MTC Buses</p></div>
+            <div id="top"><h3>Chennai Traffic Congestion Map</h3><p style="font-size: 80%;">Using the sample GPS log from MTC Buses</p></div>
             <div id="select">
+            <form id="time">
+                <p>Select a time</p>
+                <select id="timeframe" name="hour" >
+                    <option value="6.00">06.00 AM</option>
+                    <option value="6.30">06.30 AM</option>
+                    <option value="7.00">07.00 AM</option>
+                    <option value="7.30">07.30 AM</option>
+                    <option value="8.00">08.00 AM</option>
+                    <option value="8.30">08.30 AM</option>
+                    <option value="9.00">09.00 AM</option>
+                    <option value="9.30">09.30 AM</option>
+                    <option value="10.00">10.00 AM</option>
+                    <option value="10.30">10.30 AM</option>
+                    <option value="11.00">11.00 AM</option>
+                    <option value="11.30">11.30 AM</option>
+                    <option value="12.00">12.00 Noon</option>
+                    <option value="12.30">12.30 PM</option>
+                    <option value="13.00">01.00 PM</option>
+                    <option value="13.30">01.30 PM</option>
+                    <option value="14.00">02.00 PM</option>
+                    <option value="14.30">02.30 PM</option>
+                    <option value="15.00">03.00 PM</option>
+                    <option value="15.30">03.30 PM</option>
+                    <option value="16.00">04.00 PM</option>
+                    <option value="16.30">04.30 PM</option>
+                    <option value="17.00">05.00 PM</option>
+                    <option value="17.30">05.30 PM</option>
+                    <option value="18.00">06.00 PM</option>
+                </select>
+                <input type="button" value="Show Congestion" onclick="render(hour.value);"/>
+            </form>
+            <div id="notice">
+            </div>
+            <div id="modal">
+                <p>Testing modal</p>
+            </div>
 
             </div>
             <div class="ui-state-highlight ui-corner-all" style="margin-top: 10px; padding:10px;">
@@ -68,73 +115,12 @@
                 This is written using the <a href="http://leaflet.cloudmade.com">LeafletJS</a> javascript library.
                 </p>
             </div>
+
             <div id="debug">
             </div>
  
         </div>
         <div id="map"></div>
-        <script type="text/javascript">
-        /*
-            var url2="path.php?";
-
-            if(hour.toString().split(".").length > 1){url2 = url2+"hour="+Math.floor(hour)+"&min=30";}
-            else{url2=url2+"hour="+hour+"&min=00";}
-        */
-/*
-        $(function(){
-            $(window).resize(function(){
-                $("#map").height($(window).height() - 5);
-            });
-            $('#map').height($(document).height()-5);
-        });
-*/
-        </script>
-    </div>
-    <script type="text/javascript">
-        var map = new L.Map('map');
-
-        var cloudUrl = "http://{s}.tile.cloudmade.com/d2126e5f6bd740079852c1ee3a900d68/22677/256/{z}/{x}/{y}.png",
-        cloudAttr = 'Map tile data &copy; 2011 OpenStreetMap, Tiles &copy; 2011 CloudMade, Overlay Data: MTC Bus GPS Log Sample',
-        cloudmade = new L.TileLayer(cloudUrl, {maxZoom: 15, attribution: cloudAttr});
-       // 80.204895,13.069958 -104.98999178409576, 39.74683938093904
-        var avadi = new L.LatLng(13.00, 80.204895);
-        map.setView(avadi, 12).addLayer(cloudmade);
-
-        var routesList = new Object;
-        var files = new Array;
-
-        $.getJSON("path.php?hour=10&min=30", function(routes){
-                    $(routes).each(function(i,route){
-                        var geo = route.geojson;
-                    files.push(new L.GeoJSON());
-                    files[i].on("featureparse", function(e){
-                            // Styling
-                            var color;
-                            if(e.properties.speed < 10){ color = 'black'; }
-                            else if (e.properties.speed > 10 && e.properties.speed < 20 ){color='red';}
-                            else if (e.properties.speed > 20 && e.properties.speed < 30 ){color='yellow';}
-                            else if (e.properties.speed > 30 ){color='green'}
-                            e.layer.setStyle({"weight":5,
-                                "color": color,
-                                "opacity": 1});
-                           // Popup
-                            e.layer.bindPopup( e.properties.distance*1000.00+ " m<br />" + e.properties.speed + " km/hr<br />" + e.properties.time);
-                            // Visual feedback of Clicks :P
-                            e.layer.on('click', function(){
-                                    e.layer.setStyle({'opacity' : 0.5});
-                                });
-                            });
-                    map.addLayer(files[i]);
-                    files[i].addGeoJSON(geo);
-
-                    routesList[route.trace_name] = files[i];
-
-                        });
-
-                    var layersControl = new L.Control.Layers(null, routesList);
-                    map.addControl(layersControl);
-        });
-
-           </script>
+      </div>
 </body>
 </html>
