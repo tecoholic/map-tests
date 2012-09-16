@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BSNL 3G Tower Coverage in Chennai</title>
+
+    <link rel="stylesheet" href="leaflet/leaflet.css" />
+    <!--[if lte IE 8]><link rel="stylesheet" href="leaflet/leaflet.ie.css" /><![endif]-->
+    <script src="leaflet/leaflet.js"></script>
+
+    <link rel="stylesheet" href="cluster/MarkerCluster.css" />
+    <link rel="stylesheet" href="cluster/MarkerCluster.Default.css" />
+    <!--[if lte IE 8><link rel="stylesheet" href="cluster/MarkerCluster.Default.ie.css" /><![endif]-->
+    <script type="text/javascript" src="cluster/leaflet.markercluster.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script type="text/javascript" src="3g-points.js"></script>
+</head>
+<body>
+    <div id="map"> </div>
+    <script type="text/javascript">
+        var map = L.map('map').setView([13.03, 80.13],11);
+        var cloudUrl = "http://{s}.tile.cloudmade.com/d2126e5f6bd740079852c1ee3a900d68/998/256/{z}/{x}/{y}.png",
+        cloudAttr = 'Map tile data &copy; 2012 <a href="http://wiki.openstreetmap.org">OpenStreetMap</a>, Tiles &copy; 2012 <a href="http://www.cloudmade.com">CloudMade</a>';
+
+        var tileLayer = new L.tileLayer( cloudUrl, { maxZoom: 18, attribution: cloudAttr } );
+        map.addLayer( tileLayer );
+
+        var tower = L.icon({
+            iconUrl: "tower.png",
+            iconSize: [30,35],
+            iconAnchor: [15, 30]
+        });
+
+        var markers = new L.MarkerClusterGroup({ disableClusteringAtZoom: 14 });
+
+        for( var i=0; i < g3Points.length; i++ )
+        {
+            var a = g3Points[ i ];
+            var title = a[2];
+            var marker = new L.Marker( new L.LatLng( a[0], a[1] ), { title: title } );
+            marker.bindPopup( title );
+            markers.addLayer( marker );
+        }
+
+        map.addLayer( markers );
+
+        map.on( 'zoomend', function(e){
+                var zoom = this.getZoom();
+                console.log( zoom );
+            });
+
+    </script>
+</body>
+</html>
