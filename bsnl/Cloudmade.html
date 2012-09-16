@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <title>CloudMade JavaScript API example</title>
+	<script type="text/javascript" src="/milkshake/sample-points.js"></script>
+</head>
+<body>
+
+  <div id="cm-example" style="width: 500px; height: 500px"></div>
+
+  <script type="text/javascript" src="http://tile.cloudmade.com/wml/latest/web-maps-lite.js"></script>
+  <script type="text/javascript">
+    var cloudmade = new CM.Tiles.CloudMade.Web({key: 'a0bd34b7abf44a8a86dfeabb2ef43e64'});
+    var map = new CM.Map('cm-example', cloudmade);
+    map.setCenter(new CM.LatLng(13.03, 80.13), 11);
+	map.addControl(new CM.LargeMapControl());
+	map.addControl(new CM.ScaleControl());
+	var markers = [];
+	for (var i = 0; i < samplePoints.length; i++) {
+		var Location = new CM.LatLng(samplePoints[i][0], samplePoints[i][1]);
+		var Marker = new CM.Marker(Location, {title:samplePoints[i][2]});
+		//Marker.bindPopup(samplePoints[i][2]).openPopup();
+		markers.push(Marker);	
+	}
+	var clusterer = new CM.MarkerClusterer(map, {clusterRadius: 70});
+	clusterer.addMarkers(markers);
+  </script>
+
+</body>
+</html>
