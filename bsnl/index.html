@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <title>BSNL 3G Tower Coverage in Chennai</title>
 
+    <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.21.custom.css" />
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
+
     <link rel="stylesheet" href="leaflet/leaflet.css" />
     <!--[if lte IE 8]><link rel="stylesheet" href="leaflet/leaflet.ie.css" /><![endif]-->
     <script src="leaflet/leaflet.js"></script>
@@ -16,12 +20,36 @@
     <link rel="stylesheet" href="style.css" />
 
     <script type="text/javascript" src="3g-points.js"></script>
+    <script type="text/javascript" src="api-key.js"></script>
+
+    <script type="text/javascript">
+            $(window).resize(function(){
+                $("#map").height($(window).height() - 5);
+            });
+    </script>
+
 </head>
 <body>
-    <div id="map"> </div>
+    <div id="container">
+        <div id="sidebar">
+            <div id="top"><h3>BSNL 3G Towers Coverage Map</h3>
+            </div>
+            <div class="ui-state-highlight ui-corner-all" style="margin-top: 10px; padding:10px;">
+                <p style="font-size: 0.7em;"><span class="ui-icon ui-icon-info" style="float:left;"></span>
+                The data was scrapped from the BSNL Chennai Website and  the map recreated for better usability.
+                The background tiles are served using <a href="http://www.cloudmade.com">Cloudmade</a> web application tiles.
+                This is written using the <a href="http://leaflet.cloudmade.com">LeafletJS</a> javascript library.
+                </p>
+            </div>
+            <div id="debug">
+            </div>
+         </div>
+       <div id="map"></div>
+    </div>
+
     <script type="text/javascript">
         var map = L.map('map').setView([13.03, 80.13],11);
-        var cloudUrl = "http://{s}.tile.cloudmade.com/d2126e5f6bd740079852c1ee3a900d68/998/256/{z}/{x}/{y}.png",
+        var cloudUrl = "http://{s}.tile.cloudmade.com/"+cloudmadeApiKey+"/998/256/{z}/{x}/{y}.png",
         cloudAttr = 'Map tile data &copy; 2012 <a href="http://wiki.openstreetmap.org">OpenStreetMap</a>, Tiles &copy; 2012 <a href="http://www.cloudmade.com">CloudMade</a>';
 
         var tileLayer = new L.tileLayer( cloudUrl, { maxZoom: 18, attribution: cloudAttr } );
