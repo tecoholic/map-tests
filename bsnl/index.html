@@ -33,9 +33,13 @@
     <div id="container">
         <div id="sidebar">
             <div id="top"><h3>BSNL 3G Towers Coverage Map</h3>
+                <p style="font-size:0.8em;">This map shows the location of BSNL 3G towers in Chennai and their coverage area.
+                Use your mouse to interact with the map. You can zoom in by clicking the highlighted 
+                area or the [+] or using mouse scroll wheel.
+                Or just enter your location below for a quick lookup.</p>
             </div>
             <div id="search">
-                <label for="srch">Enter your location:</label>
+                <label for="srch" style="font-size:0.8em;">Your location:</label>
                 <input id="srch" />
             </div>
             <div class="ui-state-highlight ui-corner-all" style="margin-top: 10px; padding:10px;">
@@ -116,6 +120,7 @@ function uniqueOf( all ){
 
 var allPoints = $.map(g3Points, function(point){ return { label: point[2], latlon: [point[0],point[1]] }; });
 var places = uniqueOf( allPoints );
+allPoints.length = 0; //smokeit I don't what that bulk in memory
 
 $("#srch").autocomplete({
 source: function( request, response ){
