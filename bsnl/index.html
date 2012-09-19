@@ -34,6 +34,10 @@
         <div id="sidebar">
             <div id="top"><h3>BSNL 3G Towers Coverage Map</h3>
             </div>
+            <div id="search">
+                <label for="srch">Enter your location:</label>
+                <input id="srch" />
+            </div>
             <div class="ui-state-highlight ui-corner-all" style="margin-top: 10px; padding:10px;">
                 <p style="font-size: 0.7em;"><span class="ui-icon ui-icon-info" style="float:left;"></span>
                 The data was scrapped from the BSNL Chennai Website and  the map recreated for better usability.
@@ -48,6 +52,8 @@
     </div>
 
     <script type="text/javascript">
+
+        // Map initialization and response to the interactions
         var map = L.map('map').setView([13.03, 80.13],11);
         var cloudUrl = "http://{s}.tile.cloudmade.com/"+cloudmadeApiKey+"/998/256/{z}/{x}/{y}.png",
         cloudAttr = 'Map tile data &copy; 2012 <a href="http://wiki.openstreetmap.org">OpenStreetMap</a>, Tiles &copy; 2012 <a href="http://www.cloudmade.com">CloudMade</a>';
@@ -90,8 +96,45 @@
                       }
                     }
                 }
-            });
+                });
 
-    </script>
+// Searching and zooming to tower
+function uniqueOf( all ){
+    var res = [];
+    for( var i=0; i<all.length; i++ ){
+        var present = false;
+        for( var j=0; j<res.length; j++ ){
+            if( all[i].label === res[j].label ){
+                present = true;
+                break;
+            }
+        }
+        if(!present) res.push( all[i] );
+    }
+    return res;
+}
+
+var allPoints = $.map(g3Points, function(point){ return { label: point[2], latlon: [point[0],point[1]] }; });
+var places = uniqueOf( allPoints );
+
+$("#srch").autocomplete({
+source: function( request, response ){
+    var term = $.ui.autocomplete.escapeRegex(request.term)
+        , startsWithMatcher = new RegExp("^"+term, "i")
+        , startsWith = $.grep(places, function(value){
+            return startsWithMatcher.test(value.label || value.value || value)
+            })
+        , containsMatcher = new RegExp(term, "i")
+        , contains = $.grep(places, function(value){
+            return $.inArray(value, startsWith) < 0 && containsMatcher.test(value.label || value.value || value );
+            });
+        response( startsWith.concat(contains));
+},
+        select: function( event, ui ){
+            map.panTo( ui.item.latlon );
+            map.setZoom( 15 );
+        }
+});
+</script>
 </body>
 </html>

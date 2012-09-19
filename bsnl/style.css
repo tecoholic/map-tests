@@ -34,8 +34,10 @@
         h3{
             border-bottom: 2px solid #FFCD83;
         }
-        #timeframe{
-            border: 1px solid #444;
-            width: 100px;
+        #search{
+          margin-top: 8px;
+        }
+        ul.ui-autocomplete{
+          font-size: 0.7em;
         }
 
