@@ -21,6 +21,7 @@
 
     <script type="text/javascript" src="3g-points.js"></script>
     <script type="text/javascript" src="api-key.js"></script>
+    <script type="text/javascript" src="loader.js"></script>
 
     <script type="text/javascript">
             $(window).resize(function(){
@@ -34,8 +35,6 @@
         <div id="sidebar">
             <div id="top"><h3>BSNL 3G Towers Coverage Map</h3>
                 <p style="font-size:0.8em;">This map shows the location of BSNL 3G towers in Chennai and their coverage area.
-                Use your mouse to interact with the map. You can zoom in by clicking the highlighted 
-                area or the [+] or using mouse scroll wheel.
                 Or just enter your location below for a quick lookup.</p>
             </div>
             <div id="search">
@@ -56,90 +55,6 @@
     </div>
 
     <script type="text/javascript">
-
-        // Map initialization and response to the interactions
-        var map = L.map('map').setView([13.03, 80.13],11);
-        var cloudUrl = "http://{s}.tile.cloudmade.com/"+cloudmadeApiKey+"/998/256/{z}/{x}/{y}.png",
-        cloudAttr = 'Map tile data &copy; 2012 <a href="http://wiki.openstreetmap.org">OpenStreetMap</a>, Tiles &copy; 2012 <a href="http://www.cloudmade.com">CloudMade</a>';
-
-        var tileLayer = new L.tileLayer( cloudUrl, { maxZoom: 18, attribution: cloudAttr } );
-        map.addLayer( tileLayer );
-
-        var tower = L.icon({
-            iconUrl: "tower.png",
-            iconSize: [30,35],
-            iconAnchor: [15, 30]
-        });
-
-        var markers = new L.MarkerClusterGroup({ disableClusteringAtZoom: 14 });
-
-        for( var i=0; i < g3Points.length; i++ )
-        {
-            var a = g3Points[ i ];
-            var title = a[2];
-            var marker = new L.Marker( new L.LatLng( a[0], a[1] ), { title: title } );
-            marker.bindPopup( title );
-            markers.addLayer( marker );
-        }
-
-        map.addLayer( markers );
-
-        var circles = [];
-        map.on( 'zoomend', function(e){
-                var zoom = this.getZoom();
-                if ( zoom > 14 && circles.length === 0 ){
-                    for ( var i=0; i < g3Points.length; i++ ){
-                        var a = g3Points[i];
-                        var circ = L.circle([a[0], a[1]], 700, { weight: 3 } ).addTo( map );
-                        circles.push( circ );
-                    }
-                }else{
-                      if( zoom < 15 ){
-                      while( circles.length > 0 ){
-                        map.removeLayer( circles.pop() );
-                      }
-                    }
-                }
-                });
-
-// Searching and zooming to tower
-function uniqueOf( all ){
-    var res = [];
-    for( var i=0; i<all.length; i++ ){
-        var present = false;
-        for( var j=0; j<res.length; j++ ){
-            if( all[i].label === res[j].label ){
-                present = true;
-                break;
-            }
-        }
-        if(!present) res.push( all[i] );
-    }
-    return res;
-}
-
-var allPoints = $.map(g3Points, function(point){ return { label: point[2], latlon: [point[0],point[1]] }; });
-var places = uniqueOf( allPoints );
-allPoints.length = 0; //smokeit I don't what that bulk in memory
-
-$("#srch").autocomplete({
-source: function( request, response ){
-    var term = $.ui.autocomplete.escapeRegex(request.term)
-        , startsWithMatcher = new RegExp("^"+term, "i")
-        , startsWith = $.grep(places, function(value){
-            return startsWithMatcher.test(value.label || value.value || value)
-            })
-        , containsMatcher = new RegExp(term, "i")
-        , contains = $.grep(places, function(value){
-            return $.inArray(value, startsWith) < 0 && containsMatcher.test(value.label || value.value || value );
-            });
-        response( startsWith.concat(contains));
-},
-        select: function( event, ui ){
-            map.panTo( ui.item.latlon );
-            map.setZoom( 15 );
-        }
-});
 </script>
 </body>
 </html>
