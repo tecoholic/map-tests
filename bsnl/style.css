@@ -40,4 +40,11 @@
         ul.ui-autocomplete{
           font-size: 0.7em;
         }
-
+        .suggs{
+          font-size: 0.7em;
+          cursor: pointer;
+          padding: 5px;
+        }
+        .suggs:hover{
+          color: #973;
+        }

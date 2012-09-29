@@ -49,33 +49,41 @@ $(document).ready(function(){
         }
     });
 
-    // Searching based on OSM Nominatim
-    var url = "http://nominatim.openstreetmap.org/search?format=json&json_callback=updateNameMatches";
+    // searching based on osm nominatim
+    var url = "http://nominatim.openstreetmap.org/search?format=json";
     url += "&viewbox=79.25,13.5,80.5,12.25&bounded=1&q=";
 
-    function updateNameMatches( matches ){
-        //
-        console.log( "Inside updateNameMathes!" );
-        //
+    function update( matches ){
         $("#results").empty();
+        if(matches.length === 0){
+            $('#results').append( $("<h3>", {text: "No matches found in the Nomanatim Database! Try changing the spelling.",
+                class: "ui-widget-content ui-corner-all suggs"}));
+        }
         for( var i=0; i<matches.length; i++){
             var ele = matches[i];
-            console.log( matches[i].toString() );
-            $("#results").append( $( "a", { href: "#", text: ele.display_name} ).bind( 'click', {lat: ele.lat, lon: ele.lon}, function(e){ 
-                map.setView([e.data.lat, e.data.lon], 15);
+            $("#results").append( $("<h3>",{text: ele.display_name, class: "suggs ui-widget-content ui-corner-all"}).bind( 'click', {
+                lat: ele.lat,
+                lon: ele.lon
+            }, function(e){ 
+                    map.setView([parseFloat(e.data.lat), parseFloat(e.data.lon)], 15);
             }) );
-
         }
     }
 
-    // The reaction for search button
-    $( "#srchBtn" ).click( function(){
-        url += $( "#srch" ).val();
-        $.ajax({
-            url : url,
-            crossDomain: true
+    function queryNom(){
+         $.ajax({
+            url : url+$( "#srch" ).val(),
+            crossDomain: true,
+            success: function( resp ){
+                update( $.parseJSON( resp) );
+            }
         });
-    });
+    }
+
+    // The reaction for search button
+    $( "#srchBtn" ).click(function(){ queryNom(); } );
+    // or use the enter key press in the text box
+    $( '#srch' ).keydown( function(e){ if(e.which == 13 ) queryNom(); });
 
 // $.ready close brace
 });
